@@ -67,50 +67,23 @@ clignoter led.La communication entre la tâche vTaskLed et la fonction Led se fa
 Dans la section "spam", nous avons développé une logique similaire à celle de la fonction "led". Cette fonction récupère les caractères ou les chaînes de caractères entrés par l'utilisateur dans le shell, avec le nombre d'arguments transmis. Une boucle itère à travers les paramètres de argv[], déterminant la taille de argv[1] avec strlen, puis copiant les caractères dans un tableau. Ces données sont ensuite envoyées dans une boîte aux lettres pour une utilisation ultérieure.
 
 
-   
+ # 3 Debug, gestion d’erreur et statistiques
 
+  # 3.1 Gestion du tas
+  
+La zone de mémoire réservée pour l'allocation dynamique est appelée le tas, gérée par le HAL. Avant la création répétée de tâches, la RAM était utilisée à 5,83%. Lorsque des tâches bidon sont créées jusqu'à l'apparition d'une erreur, le code plante après la création de 400 tâches bidon. Le total_heap_size de FreeRTOS était par défaut de 15360. Après modification du tas de FreeRTOS pour permettre la création de plus de tâches, portant sa taille à 153600, 131 tâches peuvent maintenant être créées avant un plantage. L'utilisation de la RAM atteint alors 48,11%.Cela est dû à la grande disponibilité de l'espace mémoire aprés modification de total_heap_size.
 
-
-4.Écrire une fonction spam(), semblable à la fonction led() qui affiche du textedans la liaison série au lieu de faire clignoter les LED. On peut ajouter comme argument le message à afficher et le nombre de valeurs à afficher. Ce genre de fonction peut être utile lorsque l’on travaille avec un capteur.
-
-
- 3 Debug, gestion d’erreur et statistiques
-
- 3.1 Gestion du tas
-
- 1. Quel est le nom de la zone réservée à l’allocation dynamique ?
-    Réponse:
-
-2. Est-ce géré par FreeRTOS ou la HAL ?
-   Réponse:
-
-4. Notez la mémoire RAM et Flash utilisée:
-
-
-6.Notez la nouvelle utilisation mémoire:
-
-
-8. Notez la nouvelle utilisation mémoire aprés modification de la taille du tas (TOTAL_HEAP_SIZE)
-
-
-3.2 Gestion des piles:
-
-
-3. Écrivez la fonction vApplicationStackOverflowHook. (Rappel : C’est une fonction appelée automatiquement par FreeRTOS, vous n’avez pas à l’appeler vous-même)
-
-
-4.Débrouillez vous pour remplir la pile d’une tâche pour tester. Notez que, vu le contexte d’erreur, il ne sera peut-être pas possible de faire grand chose dans cette fonction. Utilisez le debugger.
+# 3.2 Gestion des piles:
+Dans cette phase, notre objectif est de provoquer un dépassement de pile (overflow). Pour ce faire, conformément à la documentation FreeRTOS, nous utilisons la fonction vApplicationStackOverflowHook, appelée automatiquement en cas de dépassement de pile. Cette fonction fera clignoter une LED en cas de dépassement. Pour effectuer le test, nous créons une tâche bidon qui crée un tableau de grande taille et le remplit. Ce tableau dépasse la taille de la pile, provoquant ainsi notre cas d'overflow. En mode débogage, nous plaçons un point d'arrêt et observons le code s'arrêter dans la fonction d'overflow
+# 3.3 Statistiques dans l’IDE
 
 
 
 
 
-5. Il existe d’autres hooks. Expliquez l’intérêt de chacun d’entre eux.
-
-6.  Réponse :
 
 
-3.3 Statistiques dans l’IDE
+
 
 
 
