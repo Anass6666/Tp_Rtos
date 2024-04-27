@@ -80,7 +80,7 @@ La zone de mémoire réservée pour l'allocation dynamique est appelée le tas, 
 
 # 3.2 Gestion des piles:
 Dans cette phase, notre objectif est de provoquer un dépassement de pile (overflow). Pour ce faire, conformément à la documentation FreeRTOS, nous utilisons la fonction vApplicationStackOverflowHook, appelée automatiquement en cas de dépassement de pile. Cette fonction fera clignoter une LED en cas de dépassement. Pour effectuer le test, nous créons une tâche bidon qui crée un tableau de grande taille et le remplit. Ce tableau dépasse la taille de la pile, provoquant ainsi notre cas d'overflow. En mode débogage, nous plaçons un point d'arrêt et observons le code s'arrêter dans la fonction d'overflow
-
+![tottalheap et stackoverflow](https://github.com/Anass6666/Tp_Rtos/assets/145018011/a987bd7a-5657-4577-863e-58a5b7f1892c)
 Lorsqu'un dépassement de pile se produit dans une tâche, cette fonction est automatiquement appelée par FreeRTOS. Elle utilise une boucle infinie pour clignoter une LED à un intervalle de 100 ms, ce qui permet de signaler visuellement le dépassement de pile. Cette boucle continue indéfiniment tant que le dépassement de pile persiste, fournissant ainsi une indication visuelle claire de l'erreur.
 on met un point d'arrêt puis on observe le code s'arrêter dans la fonction d'overflow. En mode debbug 
 
@@ -93,6 +93,8 @@ Méthode 3 :
 Spécifique à certains ports de FreeRTOS, vérifie les dépassements de pile dans les routines d'interruption (ISR), déclenche une assertion en cas de dépassement de pile ISR, ne déclenche pas la fonction de crochet de dépassement de pile spécifique aux ISRs.
 
 # 3.3 Statistiques dans l’IDE
+![run_time_enable](https://github.com/Anass6666/Tp_Rtos/assets/145018011/e1bb5fee-bb4e-451f-8623-9a60dbeaf73b)
+
 3.3.4
 En mode debbug , on affiche les queues et les sémaphores. 
 ![donnees taches debug](https://github.com/Anass6666/Tp_Rtos/assets/145018011/94ada442-e86c-467f-b6c5-97925a31b2fa)
