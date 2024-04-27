@@ -51,10 +51,7 @@ Pour remédier à cette situation, j'ai encadré l'appel à printf avec une sect
 Je suis la tâche 2 et je m'endors pour 2 ticks Je suis la tâche 1 et je m'endors pour 1 tick Je suis la tâche 2 et je m'endors pour 2 ticks Je suis la tâche 1 et je m'endors pour 1 tic
 
 Il faut pas oublié d'initialisez le mutex avec Mutex1 = xSemaphoreCreateMutex();
-
-# (Capture)
-
-
+![solution mutex](https://github.com/Anass6666/Tp_Rtos/assets/145018011/21d837b8-7217-4a96-a994-cd9f816d8135)
 # 2 On joue avec le Shell
 Dans cette partie l’idée est de communiquer entre le terminal et la carte Stm32.
 Le shell est représenté par le fichier shell.c qui contient des fonctions qui seront utilisées lors de la communication, parmi ces fonctions utilisent la connexion uart par le périphérique USART1, et la configuration de la carte reste la même de la première partie. Au début de cette partie, il faut modifier la fonction “fonction” dans main.c pour qu’elle affiche les arguments saisies par l’utilisateur via le terminal, donc il faut afficher les chaînes de caractères envoyés qui sont dans le tableau argv et le nombre des arguments est défini par argc. 
