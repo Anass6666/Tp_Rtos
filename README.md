@@ -104,7 +104,7 @@ En mode debbug , on affiche les queues et les sémaphores.
 
 On affiche les sémaphores et les queues.
 
-
+![taches et queue](https://github.com/Anass6666/Tp_Rtos/assets/145018011/ecf275ee-6838-4c2f-91b3-d3d3e4f562a3)
 
 
 # 3.4 Affichage des statistiques dans le shell
@@ -112,6 +112,9 @@ cette fonction fournit un moyen pratique d'afficher les statistiques du système
 
 on a utilisé une  fonction statut  pour récupérer les statistiques de temps d'exécution des tâches du système d'exploitation temps réel (RTOS) et les stocke dans un tampon (pcWriteBuffer). Ensuite, elle utilise la fonction printf pour afficher ces statistiques dans le terminal.
 L'utilisateur peut saisir le nom de la fonction dans le shell , dans ce cas : "c", et elle sera exécutée, affichant ainsi les statistiques dans le terminal.
+
+![var](https://github.com/Anass6666/Tp_Rtos/assets/145018011/543ce614-557f-4119-b097-66f3c8883795)
+![status](https://github.com/Anass6666/Tp_Rtos/assets/145018011/5b893cfa-04b0-49db-84e3-51d9c499fac2)
 
 # 4 Écriture d’un driver
 4.1 Interfacer l’ADXL345
