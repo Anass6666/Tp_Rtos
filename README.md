@@ -26,6 +26,7 @@ Le paramètre TOTAL HEAP SIZE sert à définir la RAM allouée à FreeRtos , et 
 
 1.1.2. Quel est le rôle de la macro portTICK_PERIOD_MS ?
 Cette macro facilite la conversion des périodes de temps en millisecondes en nombre de ticks système, permettant une abstraction du temps indépendamment de la fréquence du processeur et de la configuration de FreeRTOS.
+
 ![clignotement_led](https://github.com/Anass6666/Tp_Rtos/assets/145018011/b9fd473b-617f-4a4e-bbda-2d4b56781feb)
 # 1.2 Sémaphores pour la synchronisation
 
