@@ -321,6 +321,18 @@ int statut (int argc, char ** argv){
 	printf("%s\r\n", pcWriteBuffer);// Afficher la liste des tâches
 	return 0;
 }
+int testDevId (int argc, char ** argv){
+	uint8_t address = 0x00;
+	uint8_t p_data;
+	uint16_t size = 1;
+	HAL_GPIO_WritePin(NSS_GPIO_Port, NSS_Pin, GPIO_PIN_RESET); //ChipSelect a 0
+	HAL_SPI_Transmit(&hspi2, &address, 1, HAL_MAX_DELAY); //On transmet un msg a l'adresse 0x00
+	HAL_SPI_Receive(&hspi2, &p_data, size, HAL_MAX_DELAY);
+	HAL_GPIO_WritePin(NSS_GPIO_Port, NSS_Pin, GPIO_PIN_SET); // chipSelect a 1
+	printf("%X \r\n", p_data); // On printf la valeur renvoyé, rst value
+	return 0;
+}
+
 
 void vTaskShell(void * p) {
 	shell_init();
@@ -328,6 +340,7 @@ void vTaskShell(void * p) {
 	shell_add('l', led, "Allumer Led");
 	shell_add('s',spam, "Afficher message");
 	shell_add('c', statut, "Statut du CPU");
+	shell_add('t', testDevId, "valeur DevId");
 	shell_run();
 }
 
@@ -387,7 +400,7 @@ int main(void)
 	xQueue2=xQueueCreate(10 ,sizeof(unsigned long));
 		//xSemaphoreGive(sem1);
 	/* Création d'une tache Led pour le clignotement de la led avec une gestion d'erreur si le sémaphore n’est pas acquis */
-	if (xTaskCreate(task_blink_led, "BLINK_LED", TASK_LED_STACK_DEPTH, NULL, TASK_LED_PRIORITY, &h_task_led) != pdPASS)
+	if (xTaskCreate(task_blink_led, "Blink LED", TASK_LED_STACK_DEPTH, NULL, TASK_LED_PRIORITY, &h_task_led) != pdPASS)
 	{
 		printf("Error creating task shell\r\n");
 		Error_Handler();
