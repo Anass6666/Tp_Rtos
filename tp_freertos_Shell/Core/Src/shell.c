@@ -19,6 +19,7 @@
 #include "main.h"
 #include "FreeRTOS.h"
 #include "semphr.h"
+#include "stdio.h"
 
 
 extern SemaphoreHandle_t sem1;
@@ -37,12 +38,20 @@ typedef struct{
 int shell_func_list_size = 0;
 shell_func_t shell_func_list[_SHELL_FUNC_LIST_MAX_SIZE];
 
+
+
 int dataReady = 0;
 
-int __io_putchar(int ch) {
-	HAL_UART_Transmit(&huart1, (uint8_t *)&ch, 1, HAL_MAX_DELAY);
-	return ch;
+void ma_fonction_shell() {
+    printf("Bonjour depuis la fonction shell !\n");
+
 }
+
+
+//int __io_putchar(int ch) {
+//	HAL_UART_Transmit(&huart1, (uint8_t *)&ch, 1, HAL_MAX_DELAY);
+//	return ch;
+//}
 
 char uart_read() {
 	char c;

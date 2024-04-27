@@ -6,7 +6,7 @@
  ******************************************************************************
  * @attention
  *
- * Copyright (c) 2022 STMicroelectronics.
+ * Copyright (c) 2024 STMicroelectronics.
  * All rights reserved.
  *
  * This software is licensed under terms that can be found in the LICENSE file
@@ -19,6 +19,7 @@
 /* Includes ------------------------------------------------------------------*/
 #include "main.h"
 #include "cmsis_os.h"
+#include "spi.h"
 #include "usart.h"
 #include "gpio.h"
 
@@ -30,11 +31,11 @@
 #include "FreeRTOS.h"
 #include <queue.h>
 #include <semphr.h>
+#include <string.h>
 
-QueueHandle_t xQueue1,xQueue2;
-SemaphoreHandle_t sem1;
-SemaphoreHandle_t sem2;
-SemaphoreHandle_t sem3;
+
+
+
 
 uint8_t Data[]={0,0,0};
 
@@ -58,6 +59,19 @@ uint8_t Data[]={0,0,0};
 
 /* Private variables ---------------------------------------------------------*/
 
+TaskHandle_t handle_Task_bidon;
+TaskHandle_t h_task_led = NULL;
+TaskHandle_t h_task_give = NULL;
+TaskHandle_t h_task_take = NULL;
+QueueHandle_t xQueue1,xQueue2;
+QueueHandle_t q_wait = NULL;
+SemaphoreHandle_t sem1;
+SemaphoreHandle_t sem2;
+SemaphoreHandle_t sem3;
+char pcWriteBuffer[400];
+int * buffer;
+int wait=100;
+
 /* USER CODE BEGIN PV */
 #define STACK_SIZE 1000
 /* USER CODE END PV */
@@ -71,6 +85,112 @@ void MX_FREERTOS_Init(void);
 
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
+int __io_putchar(int ch)
+{
+	HAL_UART_Transmit(&huart1, (uint8_t*)&ch, 1, HAL_MAX_DELAY);
+	return ch;
+}
+
+// 1.2 changement de l’état de la LED toutes les 100ms
+void task_blink_led(void * unused)
+{
+	while (1)
+	{
+		HAL_GPIO_TogglePin(LED_GPIO_Port, LED_Pin);
+		printf ("LED State is changed\r\n");
+		vTaskDelay(100);
+	}
+}
+/*1.2 Semaphores , taskGive et taskTake, avec deux priorités differentes.TaskGive donne un sémaphore toutes les 100ms */
+void taskGive(void * unused)
+{
+	while (1)
+	{
+		printf("taskGive: donne sem: wait=%d\r\n",wait);
+		xSemaphoreGive(sem1);
+		printf("taskGive: sem donné: wait=%d\r\n",wait);
+		vTaskDelay(wait);
+		wait+=100;
+	}
+}
+void taskTake(void * unused)
+{
+	while (1)
+	{
+		printf("taskTake: prend sem: wait=%d\r\n",wait);
+		if (xSemaphoreTake(sem1, 1000)==pdFALSE)
+		{
+			printf("timeout, reset\r\n");
+			NVIC_SystemReset();
+		}
+		printf("taskTake: sem pris: wait=%d\r\n",wait);
+		//vTaskDelay(100);
+	}
+}
+
+/* 1.3 Notificatons: le même fonctionnement en utilisant des task notifications à la place des sémaphores */
+//void taskGive(void * unused)
+//{
+//	while (1)
+//	{
+//		printf("taskGive: donne sem: wait=%d\r\n",wait);
+//		xTaskNotifyGive(h_task_take);
+//		printf("taskGive: sem donné: wait=%d\r\n",wait);
+//		vTaskDelay(wait);
+//		wait+=100;
+//
+//	}
+//}
+//void taskTake(void * unused)
+//{
+//	int wait_take;
+//	while (1)
+//	{
+//		printf("taskTake: prend sem: wait=%d\r\n",wait);
+//		if (ulTaskNotifyTake(pdTRUE, 1000)==pdFALSE)
+//		{
+//			printf("timeout, reset\r\n");
+//			NVIC_SystemReset();
+//		}
+//		printf("taskTake: sem pris: wait=%d\r\n",wait);
+//		//vTaskDelay(100);
+//	}
+//}
+
+/* 1.4 Queue : Envoie de la valeur du Timer */
+//void taskGive(void * unused)
+//{
+//	int wait_give=100;
+//	while (1)
+//	{
+//		printf("taskGive: send queue: wait=%d\r\n",wait_give);
+//		if(xQueueSend(q_wait, &wait_give,portMAX_DELAY)==errQUEUE_FULL)
+//		{
+//			printf("Queue is full\r\n");
+//		}
+//		printf("taskGive: queue sent: wait=%d\r\n",wait_give);
+//		vTaskDelay(wait_give);
+//		wait_give+=100;
+//
+//
+//	}
+//}
+//void taskTake(void * unused)
+//{
+//	int wait_take=0;
+//	while (1)
+//	{
+//		printf("taskTake: receive queue: wait=%d\r\n",wait_take);
+//		if(xQueueReceive(q_wait, (void *)&wait_take,1000)==pdFALSE)
+//		{
+//			printf("timeout, reset\r\n");
+//			NVIC_SystemReset();
+//		}
+//		printf("taskTake: queue received: wait=%d\r\n",wait_take);
+//		//vTaskDelay(100);
+//	}
+//}
+
 int fonction(int argc, char ** argv) {
 	printf("Fonction bidon\r\n");
 	printf("Nous avons recu %d arguments \r\n",argc);
@@ -83,6 +203,8 @@ int fonction(int argc, char ** argv) {
 	return 0;
 }
 
+
+/* une fonction led(), appelable depuis le shell*/
 int led(int argc , char ** argv){
 	printf("Allumer une Led \r\n");
 	int valeur ;
@@ -93,7 +215,7 @@ int led(int argc , char ** argv){
 }
 
 
-
+/*Le clignotement de la LED s’effectue dans la tâche vTaskLed*/
 void vTaskLed(void *p){
 	int Data =0;
 	while(1){
@@ -114,14 +236,102 @@ void vTaskLed(void *p){
 		}
 	}
 }
+/*fonction spam qui affiche du texte dans la liaison série*/
+ int spam(int argc , char ** argv){
+	int j=0 ;
+	char mess[100]; // Déclaration d'une variable mess pour stocker le message
+	for (j=0;j<strlen(argv[1])+1;j++){  // Utilisation de <= pour inclure le caractère nul
+		mess[j]=argv[1][j];
+	}
+	xQueueSend(xQueue2,&mess,portMAX_DELAY);//Envoi du message à la file d'attente
+	xSemaphoreGive(sem3);// Libération du sémaphore
+	return 0;
+}
+ /*L'affichage du message s’effectue dans la tâche vTaskLed*/
+void vTaskSpam(void *p){
+	char message[10];
+	int j=0;
+	while(1){
+		if(uxQueueMessagesWaiting(xQueue2)!=0){
+			for(j=0;j<10;j++){
+				xQueueReceive(xQueue2,&message,portMAX_DELAY);  //reçoit boit aux lettres xQueue2 avec les messages.
+				printf("%s \r\n",&message[j]);
+			}
+		}
+		else{
+				xSemaphoreTake(sem3,portMAX_DELAY);  // changer la priorité.
+					}
+	 }
+}
+/*tache bidon infinie*/
+void Task_bidon( void *pvParameters)
+{
+	for(;;) {
+	}
 
+}
+/*dépassement de la taille de la pile: fonction appelée automatiquement par FreeRTOS*/
+void vApplicationStackOverflowHook(TaskHandle_t xTask, char *pcTaskName)
+{
+	for (;;) {
+		HAL_GPIO_TogglePin(LED_GPIO_Port, LED_Pin);
+				vTaskDelay(100);
+	    }
+}
+void vATaskX(void *pvParameters)
+{
+	// Création d'un tableau de taille importante pour provoquer un dépassement de pile
+	char bigArray[1000];
+	for(;;)
+	{
+		printf("Une tache est ici\r\n");
+
+	}
+
+}
+
+/*afficher le taux d’utilisation du CPU : démarrage du timer*/
+//void configureTimerForRunTimeStats(void)
+//{
+//	// Start timer 2
+//	HAL_TIM_Base_Start(&htim2);
+//}
+///*on récupére la valeur du timer*/
+//unsigned long getRunTimeCounterValue(void)
+//{
+//	return (unsigned long)__HAL_TIM_GET_COUNTER(&htim2);
+//}
+//void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
+//{
+//
+//	if (htim->Instance == TIM2) {
+//		HAL_IncTick();
+//		FreeRTOSRunTimeTicks++;
+//	}
+//
+//}
+int statut (int argc, char ** argv){
+	printf("Etat d'utilisation du CPU :\r\n");
+	vTaskGetRunTimeStats(pcWriteBuffer); // Récupérer les statistiques de temps d'exécution des tâches et les stocker dans le buffer
+
+	printf("%s\r\n", pcWriteBuffer);   // Afficher les statistiques de temps d'exécution des tâches
+
+	vTaskList(pcWriteBuffer); // Récupérer la liste des tâches et les stocker dans le buffer
+
+	printf("%s\r\n", pcWriteBuffer);// Afficher la liste des tâches
+	return 0;
+}
 
 void vTaskShell(void * p) {
 	shell_init();
 	shell_add('f', fonction, "Une fonction inutile");
 	shell_add('l', led, "Allumer Led");
+	shell_add('s',spam, "Afficher message");
+	shell_add('c', statut, "Statut du CPU");
 	shell_run();
 }
+
+
 
 
 
@@ -141,13 +351,12 @@ void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart)
   * @brief  The application entry point.
   * @retval int
   */
-
 int main(void)
 {
   /* USER CODE BEGIN 1 */
 	    BaseType_t xReturned;
 		TaskHandle_t xHandle = NULL;
-		TaskHandle_t xHandle1 = NULL;
+		//TaskHandle_t xHandle1 = NULL;
 		//TaskHandle_t xHandle2 = NULL;
   /* USER CODE END 1 */
 
@@ -170,13 +379,20 @@ int main(void)
   /* Initialize all configured peripherals */
   MX_GPIO_Init();
   MX_USART1_UART_Init();
+  MX_SPI2_Init();
   /* USER CODE BEGIN 2 */
 	sem1 = xSemaphoreCreateBinary();
-		sem2 = xSemaphoreCreateBinary();
-		xQueue1= xQueueCreate( 10, sizeof( unsigned long ) );
-		xQueue2=xQueueCreate(10 ,sizeof(unsigned long));
+	sem2 = xSemaphoreCreateBinary();
+	xQueue1= xQueueCreate( 10, sizeof( unsigned long ) );
+	xQueue2=xQueueCreate(10 ,sizeof(unsigned long));
 		//xSemaphoreGive(sem1);
-
+	/* Création d'une tache Led pour le clignotement de la led avec une gestion d'erreur si le sémaphore n’est pas acquis */
+	if (xTaskCreate(task_blink_led, "BLINK_LED", TASK_LED_STACK_DEPTH, NULL, TASK_LED_PRIORITY, &h_task_led) != pdPASS)
+	{
+		printf("Error creating task shell\r\n");
+		Error_Handler();
+	}
+	/* Création de la tache SHELL  */
 		xReturned = xTaskCreate(
 				vTaskShell,      	/* Function that implements the task. */
 				"Shell",         	/* Text name for the task. */
@@ -189,8 +405,39 @@ int main(void)
 			printf("Task Shell creation error: Could not allocate required memory\r\n");
 		}
 
-		xTaskCreate(vTaskLed,"led",STACK_SIZE,(void * )NULL,3	,&xHandle1);
-		//xTaskCreate(vTaskSensor,"sensor",STACK_SIZE,(void * )NULL,1	,&xHandle1);
+		/* Création d'une tache bidon pour vérifier les limites de la pile */
+		for (int z = 0; z < 400; z++) {
+			xReturned = xTaskCreate(Task_bidon, "Task_bidon", 256, NULL, 9, &handle_Task_bidon);
+				 if (xReturned == pdPASS){
+						printf("la tache %d se cree\r\n", z);
+					}
+					else
+					{
+						printf("Error, la tache n'est pas cree\r\n");
+						Error_Handler();
+					}
+				}
+		/* Création des taches give et take */
+
+		q_wait = xQueueCreate(Q_WAIT_LENGTH, Q_WAIT_SIZE);
+			if (xTaskCreate(taskGive, "taskGive", TASK_LED_STACK_DEPTH, NULL, 2, &h_task_give) != pdPASS)
+				{
+					printf("Error creating task shell\r\n");
+					Error_Handler();
+				}
+			if (xTaskCreate(taskTake, "taskTake", TASK_LED_STACK_DEPTH, NULL, 3, &h_task_take) != pdPASS)
+				{
+					printf("Error creating task shell\r\n");
+					Error_Handler();
+				}
+			/* Création de la tache X pour Overflow */
+			xTaskCreate(vATaskX, "TaskX", 100, NULL, 1, NULL);
+			/* Création de la tache led */
+		  //xTaskCreate(vTaskLed,"led",STACK_SIZE,(void * )NULL,3	,&xHandle1);
+
+			vTaskStartScheduler();// BOUCLE infinie
+
+
   /* USER CODE END 2 */
 
   /* Call init function for freertos objects (in freertos.c) */
@@ -271,11 +518,15 @@ void SystemClock_Config(void)
   * @brief  This function is executed in case of error occurrence.
   * @retval None
   */
+
 void Error_Handler(void)
 {
   /* USER CODE BEGIN Error_Handler_Debug */
 	/* User can add his own implementation to report the HAL error return state */
-
+	__disable_irq();
+		while (1)
+		{
+		}
 
   /* USER CODE END Error_Handler_Debug */
 }

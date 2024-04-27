@@ -73,8 +73,8 @@ void Error_Handler(void);
 #define ARDUINO_SCL_D15_GPIO_Port GPIOB
 #define ULPI_D7_Pin GPIO_PIN_5
 #define ULPI_D7_GPIO_Port GPIOB
-#define ARDUINO_PWM_D3_Pin GPIO_PIN_4
-#define ARDUINO_PWM_D3_GPIO_Port GPIOB
+#define NSS_Pin GPIO_PIN_4
+#define NSS_GPIO_Port GPIOB
 #define SWO_Pin GPIO_PIN_3
 #define SWO_GPIO_Port GPIOB
 #define SPDIF_RX0_Pin GPIO_PIN_7
@@ -171,8 +171,6 @@ void Error_Handler(void);
 #define SDMMC_D0_GPIO_Port GPIOD
 #define TP3_Pin GPIO_PIN_15
 #define TP3_GPIO_Port GPIOH
-#define led_Pin GPIO_PIN_1
-#define led_GPIO_Port GPIOI
 #define OTG_FS_ID_Pin GPIO_PIN_10
 #define OTG_FS_ID_GPIO_Port GPIOA
 #define RCC_OSC32_IN_Pin GPIO_PIN_14
@@ -237,8 +235,8 @@ void Error_Handler(void);
 #define LCD_G0_GPIO_Port GPIOJ
 #define LCD_G2_Pin GPIO_PIN_9
 #define LCD_G2_GPIO_Port GPIOJ
-#define ARDUINO_D4_Pin GPIO_PIN_7
-#define ARDUINO_D4_GPIO_Port GPIOG
+#define INT_Pin GPIO_PIN_7
+#define INT_GPIO_Port GPIOG
 #define ARDUINO_D2_Pin GPIO_PIN_6
 #define ARDUINO_D2_GPIO_Port GPIOG
 #define ARDUINO_A4_Pin GPIO_PIN_7
@@ -377,10 +375,14 @@ void Error_Handler(void);
 #define FMC_D10_GPIO_Port GPIOE
 #define ULPI_D4_Pin GPIO_PIN_11
 #define ULPI_D4_GPIO_Port GPIOB
-#define ARDUINO_MISO_D12_Pin GPIO_PIN_14
-#define ARDUINO_MISO_D12_GPIO_Port GPIOB
-#define ARDUINO_MOSI_PWM_D11_Pin GPIO_PIN_15
-#define ARDUINO_MOSI_PWM_D11_GPIO_Port GPIOB
+#define LED_Pin GPIO_PIN_1
+#define LED_GPIO_Port GPIOI
+#define TASK_LED_STACK_DEPTH 512
+#define TASK_LED_PRIORITY 1
+#define Q_WAIT_LENGTH 1
+#define Q_WAIT_SIZE 4
+
+
 
 /* USER CODE BEGIN Private defines */
 
