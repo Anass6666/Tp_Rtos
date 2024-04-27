@@ -75,7 +75,7 @@ Dans la section "spam", nous avons développé une logique similaire à celle de
   # 3.1 Gestion du tas
   
 La zone de mémoire réservée pour l'allocation dynamique est appelée le tas, gérée par le HAL. Avant la création répétée de tâches, la RAM était utilisée à 5,83%. Lorsque des tâches bidon sont créées jusqu'à l'apparition d'une erreur, le code plante après la création de 400 tâches bidon. Le total_heap_size de FreeRTOS était par défaut de 15360. Après modification du tas de FreeRTOS pour permettre la création de plus de tâches, portant sa taille à 153600, 131 tâches peuvent maintenant être créées avant un plantage. L'utilisation de la RAM atteint alors 48,11%.Cela est dû à la grande disponibilité de l'espace mémoire aprés modification de total_heap_size.
-
+![Zone mémoire avant la fonction bidon](https://github.com/Anass6666/Tp_Rtos/assets/145018011/52fcd714-5fe9-4965-812e-000d364a6233)
 ![pile apres modif steak size](https://github.com/Anass6666/Tp_Rtos/assets/145018011/8a1d1c74-9d08-4ba2-ba74-8b67f0e5757c)
 
 # 3.2 Gestion des piles:
