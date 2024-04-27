@@ -75,13 +75,41 @@ La zone de mémoire réservée pour l'allocation dynamique est appelée le tas, 
 
 # 3.2 Gestion des piles:
 Dans cette phase, notre objectif est de provoquer un dépassement de pile (overflow). Pour ce faire, conformément à la documentation FreeRTOS, nous utilisons la fonction vApplicationStackOverflowHook, appelée automatiquement en cas de dépassement de pile. Cette fonction fera clignoter une LED en cas de dépassement. Pour effectuer le test, nous créons une tâche bidon qui crée un tableau de grande taille et le remplit. Ce tableau dépasse la taille de la pile, provoquant ainsi notre cas d'overflow. En mode débogage, nous plaçons un point d'arrêt et observons le code s'arrêter dans la fonction d'overflow
+
+Lorsqu'un dépassement de pile se produit dans une tâche, cette fonction est automatiquement appelée par FreeRTOS. Elle utilise une boucle infinie pour clignoter une LED à un intervalle de 100 ms, ce qui permet de signaler visuellement le dépassement de pile. Cette boucle continue indéfiniment tant que le dépassement de pile persiste, fournissant ainsi une indication visuelle claire de l'erreur.
+on met un point d'arrêt puis on observe le code s'arrêter dans la fonction d'overflow. En mode debbug 
+
+3.5 VOICI l'utilité des autres hooks . 
+Méthode 1 :
+Vérifie que le pointeur de pile reste dans l'espace de pile valide après le retrait de la tâche de l'exécution, rapide mais pas garanti pour tous les dépassements de pile.
+Méthode 2 :
+Remplit la pile d'une tâche avec des valeurs connues et vérifie qu'elles ne sont pas écrasées après le retrait de la tâche de l'exécution, moins efficace mais toujours rapide et probable de détecter les dépassements de pile.
+Méthode 3 :
+Spécifique à certains ports de FreeRTOS, vérifie les dépassements de pile dans les routines d'interruption (ISR), déclenche une assertion en cas de dépassement de pile ISR, ne déclenche pas la fonction de crochet de dépassement de pile spécifique aux ISRs.
+
 # 3.3 Statistiques dans l’IDE
+3.3.4
+En mode debbug , on affiche les queues et les sémaphores. 
 
 
 
 
 
+On affiche les sémaphores et les queues.
 
+
+
+
+# 3.4 Affichage des statistiques dans le shell
+cette fonction fournit un moyen pratique d'afficher les statistiques du système d'exploitation dans le terminal, ce qui peut être utile pour surveiller les performances du système et diagnostiquer les problèmes potentiels.
+
+on a utilisé une  fonction statut  pour récupérer les statistiques de temps d'exécution des tâches du système d'exploitation temps réel (RTOS) et les stocke dans un tampon (pcWriteBuffer). Ensuite, elle utilise la fonction printf pour afficher ces statistiques dans le terminal.
+L'utilisateur peut saisir le nom de la fonction dans le shell , dans ce cas : "c", et elle sera exécutée, affichant ainsi les statistiques dans le terminal.
+
+# 4 Écriture d’un driver
+4.1 Interfacer l’ADXL345
+
+![Communication Stm32 et l'accélérométre](C:\Users\hp\Downloads\sources code-resultats/adx45.png)
 
 
 
