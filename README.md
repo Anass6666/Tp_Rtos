@@ -67,7 +67,8 @@ clignoter led.La communication entre la tâche vTaskLed et la fonction Led se fa
 (capture led et message ) 
 2.4 
 Dans la section "spam", nous avons développé une logique similaire à celle de la fonction "led". Cette fonction récupère les caractères ou les chaînes de caractères entrés par l'utilisateur dans le shell, avec le nombre d'arguments transmis. Une boucle itère à travers les paramètres de argv[], déterminant la taille de argv[1] avec strlen, puis copiant les caractères dans un tableau. Ces données sont ensuite envoyées dans une boîte aux lettres pour une utilisation ultérieure.
-
+![Clignotement_Led (1)](https://github.com/Anass6666/Tp_Rtos/assets/145018011/40fde3b5-b4bd-410d-a0e3-e1bac694f862)
+![Monsieur Shell](https://github.com/Anass6666/Tp_Rtos/assets/145018011/8b878067-ea7b-40fb-ab09-606c98583309)
 
  # 3 Debug, gestion d’erreur et statistiques
 
