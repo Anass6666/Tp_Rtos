@@ -76,6 +76,8 @@ Dans la section "spam", nous avons développé une logique similaire à celle de
   
 La zone de mémoire réservée pour l'allocation dynamique est appelée le tas, gérée par le HAL. Avant la création répétée de tâches, la RAM était utilisée à 5,83%. Lorsque des tâches bidon sont créées jusqu'à l'apparition d'une erreur, le code plante après la création de 400 tâches bidon. Le total_heap_size de FreeRTOS était par défaut de 15360. Après modification du tas de FreeRTOS pour permettre la création de plus de tâches, portant sa taille à 153600, 131 tâches peuvent maintenant être créées avant un plantage. L'utilisation de la RAM atteint alors 48,11%.Cela est dû à la grande disponibilité de l'espace mémoire aprés modification de total_heap_size.
 
+![pile apres modif steak size](https://github.com/Anass6666/Tp_Rtos/assets/145018011/8a1d1c74-9d08-4ba2-ba74-8b67f0e5757c)
+
 # 3.2 Gestion des piles:
 Dans cette phase, notre objectif est de provoquer un dépassement de pile (overflow). Pour ce faire, conformément à la documentation FreeRTOS, nous utilisons la fonction vApplicationStackOverflowHook, appelée automatiquement en cas de dépassement de pile. Cette fonction fera clignoter une LED en cas de dépassement. Pour effectuer le test, nous créons une tâche bidon qui crée un tableau de grande taille et le remplit. Ce tableau dépasse la taille de la pile, provoquant ainsi notre cas d'overflow. En mode débogage, nous plaçons un point d'arrêt et observons le code s'arrêter dans la fonction d'overflow
 
