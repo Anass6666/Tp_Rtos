@@ -108,15 +108,8 @@ L'utilisateur peut saisir le nom de la fonction dans le shell , dans ce cas : "c
 
 # 4 Écriture d’un driver
 4.1 Interfacer l’ADXL345
+ ![adx45](https://github.com/Anass6666/Tp_Rtos/assets/145018011/a9ea76a5-2d5c-44ac-915c-b97c7979c332)
 
-![Communication Stm32 et l'accélérométre](C:\Users\hp\Downloads\sources code-resultats/adx45.png)
-
-
-
-
-
-
- 
 
 
 
