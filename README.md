@@ -86,10 +86,12 @@ Dans cette phase, notre objectif est de provoquer un dépassement de pile (overf
 
 Lorsqu'un dépassement de pile se produit dans une tâche, cette fonction est automatiquement appelée par FreeRTOS. Elle utilise une boucle infinie pour clignoter une LED à un intervalle de 100 ms, ce qui permet de signaler visuellement le dépassement de pile. Cette boucle continue indéfiniment tant que le dépassement de pile persiste, fournissant ainsi une indication visuelle claire de l'erreur.
 on met un point d'arrêt puis on observe le code s'arrêter dans la fonction d'overflow. En mode debbug 
+![depass](https://github.com/Anass6666/Tp_Rtos/assets/145018011/381c1e37-43db-4f39-8950-d76945d85bb1)
 
 3.5 VOICI l'utilité des autres hooks . 
 Méthode 1 :
 Vérifie que le pointeur de pile reste dans l'espace de pile valide après le retrait de la tâche de l'exécution, rapide mais pas garanti pour tous les dépassements de pile.
+
 Méthode 2 :
 Remplit la pile d'une tâche avec des valeurs connues et vérifie qu'elles ne sont pas écrasées après le retrait de la tâche de l'exécution, moins efficace mais toujours rapide et probable de détecter les dépassements de pile.
 Méthode 3 :
