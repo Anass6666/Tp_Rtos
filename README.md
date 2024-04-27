@@ -125,6 +125,15 @@ L'utilisateur peut saisir le nom de la fonction dans le shell , dans ce cas : "c
 
  ![adx45](https://github.com/Anass6666/Tp_Rtos/assets/145018011/a9ea76a5-2d5c-44ac-915c-b97c7979c332)
 
+# 4.2 Premiers tests
+
+![DevId](https://github.com/Anass6666/Tp_Rtos/assets/145018011/8973b122-403a-403d-934b-14d7b86347d9)
+![devidsheel](https://github.com/Anass6666/Tp_Rtos/assets/145018011/7b63231a-7640-430d-a911-c64b38305aca)
+
+
+
+4.2.3 Pour initier la mesure et activer l'interruption à chaque fois, configurez le bit D7 (DATA_READY) à 1 et les autres à 0 dans les registres INT_ENABLE. De plus, positionnez le bit D3 (Measure) à 1 tout en mettant les autres à 0 dans le registre POWER_CTL.
+
 
 
 
