@@ -33,6 +33,11 @@ Cette macro facilite la conversion des périodes de temps en millisecondes en no
 1.2.6. Changez les priorités. Expliquez les changements dans l’affichage.
 Modifier les priorités influence l'ordonnancement des tâches. Une tâche avec une priorité plus élevée sera exécutée plus fréquemment, préemptant les tâches de priorité inférieure. Cela affecte la fréquence d'affichage des messages des tâches, selon leur nouvelle priorité.
 
+![give 2 take 3](https://github.com/Anass6666/Tp_Rtos/assets/145018011/3284575f-a480-4e85-883a-dab64e2c2f2a)
+
+![give 3 take 2](https://github.com/Anass6666/Tp_Rtos/assets/145018011/03a076b4-30e8-4b9d-94d4-ca18ac8b1d6d)
+
+
 # 1.5 Réentrance et exclusion mutuelle
 
 Dans notre configuration, nous avons défini les priorités et les délais des tâches comme suit :
