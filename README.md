@@ -115,6 +115,7 @@ L'utilisateur peut saisir le nom de la fonction dans le shell , dans ce cas : "c
 
 ![var](https://github.com/Anass6666/Tp_Rtos/assets/145018011/543ce614-557f-4119-b097-66f3c8883795)
 ![status](https://github.com/Anass6666/Tp_Rtos/assets/145018011/5b893cfa-04b0-49db-84e3-51d9c499fac2)
+![shell](https://github.com/Anass6666/Tp_Rtos/assets/145018011/5e3d3f3c-2d23-48a7-a902-2f4999b50f8e)
 
 # 4 Écriture d’un driver
 4.1 Interfacer l’ADXL345
