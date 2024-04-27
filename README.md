@@ -95,10 +95,7 @@ Spécifique à certains ports de FreeRTOS, vérifie les dépassements de pile da
 # 3.3 Statistiques dans l’IDE
 3.3.4
 En mode debbug , on affiche les queues et les sémaphores. 
-
-
-
-
+![donnees taches debug](https://github.com/Anass6666/Tp_Rtos/assets/145018011/94ada442-e86c-467f-b6c5-97925a31b2fa)
 
 On affiche les sémaphores et les queues.
 
